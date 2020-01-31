@@ -1,10 +1,13 @@
 #include "hr4988.h"
 
 HR4988_DriverTypeDef ActiveDriversArr[MAX_DRIVERS_NUMBER];
-
+uint64_t DriverSteps[MAX_DRIVERS_NUMBER];
 uint8_t active_drivers;
 
 void HR4988_DriverReset(HR4988_DriverTypeDef * DriverStruct){
+	
+	HAL_TIM_Base_Stop_IT(&DriverStruct->StartFreqTimer);
+	HAL_TIM_Base_Stop_IT(&DriverStruct->NormalFreqTimer);
 	
 	HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->nEN,GPIO_PIN_SET);
 	HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->nRST,GPIO_PIN_RESET);
@@ -36,6 +39,11 @@ void HR4988_SetStepFreq(TIM_HandleTypeDef HalTimerHandle){
 
 void HR4988_RunMotor(HR4988_DriverTypeDef * DriverStruct,HR4988_Direction Dir){
 	
+	HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->nEN,GPIO_PIN_RESET);
+	
+	HAL_TIM_Base_Start_IT(&DriverStruct->StartFreqTimer);
+	
+		
 }
 
 uint8_t HR4988_DriversInit(HR4988_DriverTypeDef * Drivers,uint8_t DriverNumber){

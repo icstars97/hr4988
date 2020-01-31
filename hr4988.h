@@ -4,10 +4,15 @@
 #define MAX_DRIVERS_NUMBER 1
 #endif
 
+#ifndef START_STEPS_NUMBER
+#define START_STEPS_NUMBER 5
+#endif
+
 typedef struct{
 	GPIO_TypeDef * GPIO_Port;
 	uint16_t nEN, MS1, MS2, MS3, nRST, nSLEEP, STEP, DIR;
 	TIM_HandleTypeDef StartFreqTimer, NormalFreqTimer;
+	uint8_t Index;
 }HR4988_DriverTypeDef;
 
 typedef enum step_enum{
