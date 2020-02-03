@@ -1,18 +1,17 @@
 #include "main.h"
 
-#ifndef MAX_DRIVERS_NUMBER
-#define MAX_DRIVERS_NUMBER 1
-#endif
 
-#ifndef START_STEPS_NUMBER
+#define MAX_DRIVERS_NUMBER 1
+
 #define START_STEPS_NUMBER 5
-#endif
+
 
 typedef struct{
 	GPIO_TypeDef * GPIO_Port;
 	uint16_t nEN, MS1, MS2, MS3, nRST, nSLEEP, STEP, DIR;
-	TIM_HandleTypeDef StartFreqTimer, NormalFreqTimer;
-	uint8_t Index;
+	TIM_HandleTypeDef Timer;
+	uint8_t Index, DriverDisable;
+	
 }HR4988_DriverTypeDef;
 
 typedef enum step_enum{
@@ -28,7 +27,7 @@ typedef enum step_enum{
 
 typedef enum dir_enum{
 	CW_DIR=0x00U,
-	CCW_dir
+	CCW_DIR
 	
 }HR4988_Direction;
 
@@ -36,4 +35,10 @@ void HR4988_DriverReset(HR4988_DriverTypeDef * DriverStruct);
 
 void HR4988_SetStepMode(HR4988_DriverTypeDef * DriverStruct,HR4988_StepMode Mode);
 
-uint8_t HR4988_DriversInit(HR4988_DriverTypeDef * Drivers,uint8_t DriverNumber);
+void HR4988_DriverInit(HR4988_DriverTypeDef * DriverStruct);
+
+void HR4988_RunMotor(HR4988_DriverTypeDef * DriverStruct,HR4988_Direction Dir);
+
+void HR4988_StopMotor(HR4988_DriverTypeDef * DriverStruct);
+
+void HR4988_RunFixedSteps(HR4988_DriverTypeDef *DriverStruct, uint64_t Stepcount, HR4988_Direction Dir);
