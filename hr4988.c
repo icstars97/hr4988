@@ -6,34 +6,8 @@ static uint64_t DriverStepcounts[MAX_DRIVERS_NUMBER];
 static uint8_t StepcountEnabled[MAX_DRIVERS_NUMBER];
 static uint8_t active_drivers=0x00U;
 
-void HR4988_DriverReset(HR4988_DriverTypeDef * DriverStruct){
-	
-	HAL_TIM_Base_Stop_IT(&DriverStruct->Timer);
-	
-	
-	HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->nEN,GPIO_PIN_SET);
-	HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->nRST,GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->nSLEEP,GPIO_PIN_RESET);
-	
-	HAL_Delay(10);
-	
-	HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->nRST,GPIO_PIN_SET);
-	HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->nSLEEP,GPIO_PIN_SET);
-	
-	HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->DIR,GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->MS1,GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->MS2,GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->MS3,GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->STEP,GPIO_PIN_RESET);
-}
 
-void HR4988_SetStepMode(HR4988_DriverTypeDef * DriverStruct,HR4988_StepMode Mode){
-	
-	HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->MS1,(GPIO_PinState)(Mode & (1<<2)));
-	HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->MS2,(GPIO_PinState)(Mode & (1<<1)));
-	HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->MS3,(GPIO_PinState)(Mode & (1<<0)));
-	
-}
+
 
 void HR4988_SetStepFreq(TIM_HandleTypeDef HalTimerHandle){
 	
@@ -46,7 +20,7 @@ void HR4988_RunMotor(HR4988_DriverTypeDef * DriverStruct,HR4988_Direction Dir){
 	
 	DriverStruct->Timer.Instance->ARR=DriverStruct->StartCounterPeriod;
 	
-	HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->nEN,GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->EN,GPIO_PIN_SET);
 	
 	HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->DIR,(GPIO_PinState)Dir);
 	
@@ -58,7 +32,7 @@ void HR4988_RunMotor(HR4988_DriverTypeDef * DriverStruct,HR4988_Direction Dir){
 void HR4988_StopMotor(HR4988_DriverTypeDef * DriverStruct){
 	
 	if (DriverStruct->DriverDisable){
-		HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->nEN,GPIO_PIN_SET);
+		HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->EN,GPIO_PIN_RESET);
 	}
 	HAL_TIM_Base_Stop_IT(&DriverStruct->Timer);
 	
