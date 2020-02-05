@@ -3,14 +3,15 @@
 
 #define MAX_DRIVERS_NUMBER 1
 
-#define START_STEPS_NUMBER 5
+
 
 
 typedef struct{
 	GPIO_TypeDef * GPIO_Port;
 	uint16_t nEN, MS1, MS2, MS3, nRST, nSLEEP, STEP, DIR;
 	TIM_HandleTypeDef Timer;
-	uint8_t Index, DriverDisable;
+	uint8_t Index, DriverDisable, PeriodStep;
+	uint16_t StartCounterPeriod, StopCounterPeriod;
 	
 }HR4988_DriverTypeDef;
 

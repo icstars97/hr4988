@@ -44,7 +44,11 @@ void HR4988_RunMotor(HR4988_DriverTypeDef * DriverStruct,HR4988_Direction Dir){
 	
 	DriverSteps[DriverStruct->Index]=0x00U;
 	
+	DriverStruct->Timer.Instance->ARR=DriverStruct->StartCounterPeriod;
+	
 	HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->nEN,GPIO_PIN_RESET);
+	
+	HAL_GPIO_WritePin(DriverStruct->GPIO_Port,DriverStruct->DIR,(GPIO_PinState)Dir);
 	
 	HAL_TIM_Base_Start_IT(&DriverStruct->Timer);
 	
@@ -95,6 +99,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			else{
 				HAL_GPIO_TogglePin(ActiveDriversArr[i].GPIO_Port,ActiveDriversArr[i].STEP);
 				DriverSteps[i]++;
+				if (htim->Instance->ARR>ActiveDriversArr[i].StopCounterPeriod){
+					htim->Instance->ARR=htim->Instance->ARR-ActiveDriversArr[i].PeriodStep;
+				}
 			}
 			
 		}
