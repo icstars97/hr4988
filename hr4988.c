@@ -20,7 +20,7 @@ void HR4988_RunMotor(HR4988_DriverTypeDef * DriverStruct,HR4988_Direction Dir){
 	
 	DriverStruct->Timer.Instance->ARR=DriverStruct->StartCounterPeriod;
 	
-	HAL_GPIO_WritePin(SHIELD_ENABLE_PORT,SHIELD_ENABLE_PIN,GPIO_PIN_SET);
+	HAL_GPIO_WritePin(SHIELD_ENABLE_PORT,SHIELD_ENABLE_PIN,GPIO_PIN_RESET);
 	
 	HAL_GPIO_WritePin(DriverStruct->DIR_Port,DriverStruct->DIR,(GPIO_PinState)Dir);
 	
@@ -32,7 +32,7 @@ void HR4988_RunMotor(HR4988_DriverTypeDef * DriverStruct,HR4988_Direction Dir){
 void HR4988_StopMotor(HR4988_DriverTypeDef * DriverStruct){
 	
 	if (DriverStruct->DriverDisable){
-		HAL_GPIO_WritePin(SHIELD_ENABLE_PORT,SHIELD_ENABLE_PIN,GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(SHIELD_ENABLE_PORT,SHIELD_ENABLE_PIN,GPIO_PIN_SET);
 	}
 	HAL_TIM_Base_Stop_IT(&DriverStruct->Timer);
 	
